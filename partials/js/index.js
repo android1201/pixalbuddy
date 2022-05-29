@@ -29,7 +29,7 @@ $(document).ready(() => {
 	});
 	try {
 		(async () => {
-			var api = await fetch('/pixalbuddy/partials/txt/cats_images.txt');
+			var api = await fetch('pixalbuddy/partials/txt/cats_images.txt');
 			if (api.ok && api.status == '200') {
 				var data = await api.text();
 				data = data.split('\n');
@@ -38,19 +38,19 @@ $(document).ready(() => {
 					list.push(mata);
 				}
 			}
-			if(page === 'first') {
+			if (page === 'first') {
 				page = 1;
 			}
-			if(page === 'last') {
-				page = list.length -1;
+			if (page === 'last') {
+				page = list.length - 1;
 			}
-			if(page < 1) {
+			if (page < 1) {
 				page = 1;
 			}
-			if(page > list.length - 1) {
-				page = list.length -1;
+			if (page > list.length - 1) {
+				page = list.length - 1;
 			}
-			page = page -1;
+			page = page - 1;
 			for (var src of list.at(page)) {
 				$('#imgBox').append(`<div><object data='${src}'></object><div class='navbar'><ul>
 					<a href="${src}" class='a'>
@@ -73,7 +73,14 @@ $(document).ready(() => {
 			$('.a').on('click dblclick', (e) => {
 				e.preventDefault();
 				if (e.target.name === "copy") {
-
+					if (!$('div').hasClass('.copyarea')) {
+						var cpdiv = document.createElement('div');
+						cpdiv.className = "copyarea";
+						cpdiv.innerHTML = `<input type="text" value="${e.target.parentElement.parentElement.href}" readonly>`;
+						e.target.parentElement.parentElement.parentElement.parentElement.parentElement.appendChild(cpdiv);
+					} else {
+						$('.copyarea input').val(e.target.parentElement.parentElement.href);
+					}
 				} else if (e.target.name === "cloud-download") {
 					var d = document.createElement('a');
 					var df = e.target.parentElement.parentElement.href;
@@ -83,7 +90,9 @@ $(document).ready(() => {
 					d.href = URL.createObjectURL(df);
 					alert('hi');
 					d.click();
-				} else {}
+				} else {
+					window.location.href = e.target.parentElement.parentElement.href;
+				}
 			});
 			$('object').css({
 				'height': '80%',
@@ -147,9 +156,51 @@ $(document).ready(() => {
         </li>
         </ul>
       </div>`);
+			$('#slider ul').children().addClass('active');
 		})();
 		$('head').append(`
 		<style>
+		.copyarea input {
+			height: 85%;
+			width: 90%;
+			display: flex;
+			background-color: rgba(52, 189, 235, 0.5);
+			justify-content: center;
+			align-items: center;
+			border-radius: 12px;
+			border-style: none;
+			outline: none;
+			box-shadow: inset 0px 0px 7px rgba(52, 189, 235, 3.6);
+			padding: 0px 8px;
+			font-size: 1.15em;
+			color: rgba(156, 255, 248,0.8);
+		}
+		.copyarea {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			z-index: 10;
+			position: fixed;
+			height: 7.5%;
+			width: 85%;
+			background: rgba(156, 255, 248,0.8);
+			border-radius: 8px;
+			box-shadow: inset 0px 0px 3px rgba(156, 255, 248,0.8);
+			left: 2%;
+			top: 1%;
+		}
+		.active {
+			transition: width 0.6s, height 0.6s;
+			box-shadow: inset 0px 0px 5px rgba(156, 255, 248,0.8);
+			height: 75%;
+			width: 12.5%;
+			border-radius: 50%;
+		}
+		.active:hover {
+			height: 63%;
+			width: 10.5%;
+			background: skyblue;
+		}
 		 #slider ul {
   list-style: none;
   width: 98%;
@@ -159,11 +210,14 @@ $(document).ready(() => {
   justify-content: space-evenly;
   align-items: center;
   position: relative;
-  left: -8%;
-  top: -25%;
+  left: -9%;
+  top: -28%;
 }
 #slider ul li {
   float: left;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 ion-icon {
   font-size: 1.45em;
@@ -192,6 +246,7 @@ a:active {
 `);
 	} catch (e) {}
 });
+
 function golast() {
 	var curwin = window.location.href;
 	var npv = 'last';
