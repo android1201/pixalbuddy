@@ -1,12 +1,6 @@
 var list = [];
 var url = new URL(window.location.href);
-var page = parseInt(url.searchParams.get('page'));
-if (!page) {
-	page = 1;
-}
-if (page < 1) {
-	page = 1;
-}
+var page = url.searchParams.get('page') ? url.searchParams.get('page') : 1;
 $(document).ready(() => {
 	$('body').css({
 		'background-color': 'grey',
@@ -35,7 +29,7 @@ $(document).ready(() => {
 	});
 	try {
 		(async () => {
-			var api = await fetch('/pixalbuddy/partials/txt/cats_images.txt');
+			var api = await fetch('pixalbuddy/partials/txt/cats_images.txt');
 			if (api.ok && api.status == '200') {
 				var data = await api.text();
 				data = data.split('\n');
@@ -44,11 +38,20 @@ $(document).ready(() => {
 					list.push(mata);
 				}
 			}
-			if (page > list.length) {
-				page = list.length;
+			if(page === 'first') {
+				page = 1;
 			}
-			page = page - 1;
-			for (var src of list[page]) {
+			if(page === 'last') {
+				page = list.length -1;
+			}
+			if(page < 1) {
+				page = 1;
+			}
+			if(page > list.length - 1) {
+				page = list.length -1;
+			}
+			page = page -1;
+			for (var src of list.at(page)) {
 				$('#imgBox').append(`<div><object data='${src}'></object><div class='navbar'><ul>
 					<a href="${src}" class='a'>
 					<li>
@@ -189,20 +192,19 @@ a:active {
 `);
 	} catch (e) {}
 });
-
 function golast() {
 	var curwin = window.location.href;
-	var npv = pageArr.length;
+	var npv = 'last';
 	var win = curwin.split('.github.io')[0];
-	var newurl = win + '.github.io/pixalbuddy/=' + npv;
+	var newurl = win + '.github.io/pixalbuddy/?page=' + npv;
 	window.location.href = newurl;
 }
 
 function gofirst() {
 	var curwin = window.location.href;
-	var npv = 1;
+	var npv = 'first';
 	var win = curwin.split('.github.io')[0];
-	var newurl = win + '.github.io/pixalbuddy/=' + npv;
+	var newurl = win + '.github.io/pixalbuddy/?page=' + npv;
 	window.location.href = newurl;
 }
 
