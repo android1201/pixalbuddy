@@ -51,7 +51,9 @@ $(document).ready(() => {
 				page = list.length - 1;
 			}
 			page = page - 1;
+			var jai = 0;
 			for (var src of list.at(page)) {
+				jai += 1
 				$('#imgBox').append(`<div><object data='${src}'></object><div class='navbar'><ul>
 					<a href="${src}" class='a'>
 					<li>
@@ -63,7 +65,7 @@ $(document).ready(() => {
 						<ion-icon name="share-alt"></ion-icon>
 					</li>
 					</a>
-					<a href="${src}" class='a'>
+					<a href="${src}" class='a' download='${page}_${jai}'>
 					<li>
 						<ion-icon name="cloud-download"></ion-icon>
 					</li>
@@ -73,23 +75,31 @@ $(document).ready(() => {
 			$('.a').on('click dblclick', (e) => {
 				e.preventDefault();
 				if (e.target.name === "copy") {
-					if ($('div').hasClass('.copyarea')) {
+					if ($('div').hasClass('.copyarea') === true) {
 						$('.copyarea input').val(e.target.parentElement.parentElement.href);
-					} else {
+					} else if ($('div').hasClass('.copyarea') === false) {
 						var cpdiv = document.createElement('div');
 						cpdiv.className = "copyarea";
 						cpdiv.innerHTML = `<input type="text" value="${e.target.parentElement.parentElement.href}" readonly>`;
 						e.target.parentElement.parentElement.parentElement.parentElement.parentElement.appendChild(cpdiv);
 					}
 				} else if (e.target.name === "cloud-download") {
-					var d = document.createElement('a');
 					var df = e.target.parentElement.parentElement.href;
-					var type = df.split('.').at(-1);
-					d.target = '_blank';
-					d.download = 'ab.' + type;
-					d.href = URL.createObjectURL(df);
-					alert('hi');
-					d.click();
+					fetch(df).then(rrr => {
+						rrr.blob().then(jjjj => {
+							console.log(jjjj);
+							var read = new FileReader();
+							read.readAsDataURL(jjjj);
+							read.onloadend = () => {
+								var b64d = read.result;
+								var d = document.createElement('a');
+								d.href = b64d;
+								d.target = '_self';
+								d.download = e.target.parentElement.parentElement.download;
+								d.click();
+							}
+						});
+					});
 				} else {
 					window.location.href = e.target.parentElement.parentElement.href;
 				}
