@@ -87,7 +87,6 @@ $(document).ready(() => {
 					var df = e.target.parentElement.parentElement.href;
 					fetch(df).then(rrr => {
 						rrr.blob().then(jjjj => {
-							console.log(jjjj);
 							var read = new FileReader();
 							read.readAsDataURL(jjjj);
 							read.onloadend = () => {
