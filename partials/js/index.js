@@ -29,7 +29,7 @@ $(document).ready(() => {
 	});
 	try {
 		(async () => {
-			var api = await fetch('pixalbuddy/partials/txt/cats_images.txt');
+			var api = await fetch('/pixalbuddy/partials/txt/cats_images.txt');
 			if (api.ok && api.status == '200') {
 				var data = await api.text();
 				data = data.split('\n');
