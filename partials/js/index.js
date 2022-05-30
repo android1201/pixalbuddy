@@ -73,13 +73,13 @@ $(document).ready(() => {
 			$('.a').on('click dblclick', (e) => {
 				e.preventDefault();
 				if (e.target.name === "copy") {
-					if (!$('div').hasClass('.copyarea')) {
+					if ($('div').hasClass('.copyarea')) {
+						$('.copyarea input').val(e.target.parentElement.parentElement.href);
+					} else {
 						var cpdiv = document.createElement('div');
 						cpdiv.className = "copyarea";
 						cpdiv.innerHTML = `<input type="text" value="${e.target.parentElement.parentElement.href}" readonly>`;
 						e.target.parentElement.parentElement.parentElement.parentElement.parentElement.appendChild(cpdiv);
-					} else {
-						$('.copyarea input').val(e.target.parentElement.parentElement.href);
 					}
 				} else if (e.target.name === "cloud-download") {
 					var d = document.createElement('a');
